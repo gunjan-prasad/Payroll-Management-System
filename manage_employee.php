@@ -1,7 +1,28 @@
 <?php 
 include 'db_connect.php'; 
 if(isset($_GET['id'])){
-	$qry = $conn->query("SELECT * FROM employee where id = ".$_GET['id'])->fetch_array();
+	$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+if ($id === false || $id === null || $id < 1) {
+    http_response_code(400);
+    exit('Invalid employee ID');
+}
+
+$stmt = $conn->prepare(
+    'SELECT * FROM employee WHERE id = ?'
+);
+
+$stmt->bind_param('i', $id);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$qry = $result->fetch_assoc();
+$stmt->close();
+
+if (!$qry) {
+    http_response_code(404);
+    exit('Employee not found');
+}
 	foreach($qry as $k => $v){
 		$$k = $v;
 	}
