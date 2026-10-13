@@ -22,6 +22,14 @@
 		</div>
 
 </nav>
+```php
 <script>
-	$('.nav-<?php echo isset($_GET['page']) ? $_GET['page'] : '' ?>').addClass('active')
+    $('.nav-<?php
+        echo htmlspecialchars(
+            is_string($page ?? null) ? $page : '',
+            ENT_QUOTES,
+            'UTF-8'
+        );
+    ?>').addClass('active');
 </script>
+```
